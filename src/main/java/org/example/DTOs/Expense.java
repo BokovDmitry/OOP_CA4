@@ -3,7 +3,7 @@ package org.example.DTOs;
 import java.util.Date;
 
 public class Expense {
-    private int id;
+    private int incomeID;
     private String title;
     private String category;
     private double amount;
@@ -11,8 +11,8 @@ public class Expense {
 
     public Expense() {}
 
-    public Expense(int id, String title, String category, double amount, Date dateIncurred) {
-        this.id = id;
+    public Expense(int incomeID, String title, String category, double amount, Date dateIncurred) {
+        this.incomeID = incomeID;
         this.title = title;
         this.category = category;
         this.amount = amount;
@@ -20,19 +20,19 @@ public class Expense {
     }
 
     public Expense(String title, String category, double amount, Date dateIncurred) {
-        this.id = 0;
+        this.incomeID = 0;
         this.title = title;
         this.category = category;
         this.amount = amount;
         this.dateIncurred = dateIncurred;
     }
 
-    public int getId() {
-        return id;
+    public int getIncomeID() {
+        return incomeID;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIncomeID(int incomeID) {
+        this.incomeID = incomeID;
     }
 
     public String getTitle() {
@@ -70,7 +70,7 @@ public class Expense {
     @Override
     public String toString() {
         return "Expense{" +
-                "id=" + id +
+                "id=" + incomeID +
                 ", title='" + title + '\'' +
                 ", category='" + category + '\'' +
                 ", amount=" + amount +
