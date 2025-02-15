@@ -5,6 +5,8 @@ import org.example.DAOs.MySqlFinanceDao;
 import org.example.DTOs.Expense;
 import org.example.Exceptions.DaoException;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
@@ -32,5 +34,29 @@ public class Main {
         } catch (DaoException e) {
             throw new RuntimeException(e);
         }
+
+//        try {
+//            System.out.println("Call addExpense()");
+//
+//            LocalDate localDate = LocalDate.of(2025, 2, 9);
+//            Date date = java.sql.Date.valueOf(localDate);
+//
+//            Expense e = new Expense( "New Keyboard", "Electronics", 100.0, date);
+//
+//            System.out.println(financeDI.addExpense(e));
+//
+//            System.out.println("Expense added successfully!");
+//
+//            List<Expense> expenses = financeDI.listAllExpenses();
+//
+//            for(Expense exp : expenses)
+//            {
+//                System.out.println(exp);
+//            }
+//
+//        } catch (DaoException e) {
+//            System.out.println("Could not add Expense" + e.getMessage());
+//            throw new RuntimeException(e);
+//        }
     }
 }
