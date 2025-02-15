@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface FinanceDaoInterface {
     public List<Expense> listAllExpenses() throws DaoException;
+    public Expense addExpense(Expense e) throws DaoException;
 }
