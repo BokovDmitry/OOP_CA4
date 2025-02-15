@@ -3,6 +3,7 @@ package org.example;
 import org.example.DAOs.FinanceDaoInterface;
 import org.example.DAOs.MySqlFinanceDao;
 import org.example.DTOs.Expense;
+import org.example.DTOs.Income;
 import org.example.Exceptions.DaoException;
 
 import java.time.LocalDate;
@@ -16,47 +17,45 @@ public class Main {
 
         FinanceDaoInterface financeDI = new MySqlFinanceDao();
 
-        try {
-            System.out.println("Call listAllExpenses()");
-
-            List<Expense> expenses = financeDI.listAllExpenses();
-
-            if(expenses.isEmpty())
-                System.out.println("No Records Found");
-            else
-            {
-                for(Expense e : expenses)
-                {
-                    System.out.println(e);
-                }
-            }
-
-        } catch (DaoException e) {
-            throw new RuntimeException(e);
-        }
-
 //        try {
-//            System.out.println("Call addExpense()");
+//            System.out.println("Call listAllIncomes()");
 //
-//            LocalDate localDate = LocalDate.of(2025, 2, 9);
-//            Date date = java.sql.Date.valueOf(localDate);
+//            List<Income> incomes = financeDI.listAllIncomes();
 //
-//            Expense e = new Expense( "New Keyboard", "Electronics", 100.0, date);
-//
-//            System.out.println(financeDI.addExpense(e));
-//
-//            System.out.println("Expense added successfully!");
-//
-//            List<Expense> expenses = financeDI.listAllExpenses();
-//
-//            for(Expense exp : expenses)
+//            if(incomes.isEmpty())
+//                System.out.println("No Records Found");
+//            else
 //            {
-//                System.out.println(exp);
+//                for(Income i : incomes)
+//                {
+//                    System.out.println(i);
+//                }
 //            }
 //
 //        } catch (DaoException e) {
-//            System.out.println("Could not add Expense" + e.getMessage());
 //            throw new RuntimeException(e);
 //        }
+
+        try {
+            System.out.println("Call addExpense()");
+
+            LocalDate localDate = LocalDate.of(2025, 2, 9);
+            Date date = java.sql.Date.valueOf(localDate);
+
+            Income i = new Income( 3,"Birthday Gift", 100.0, date);
+
+            System.out.println(financeDI.deleteIncomeByID(3));
+
+            List<Income> incomes = financeDI.listAllIncomes();
+
+            for(Income inc : incomes)
+            {
+                System.out.println(inc);
+            }
+
+        } catch (DaoException e) {
+            System.out.println("Could not add Expense" + e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 }

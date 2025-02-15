@@ -24,7 +24,7 @@ public class Income {
         this.date = date;
     }
 
-    public int getExpenseID() {
+    public int getIncomeID() {
         return incomeID;
     }
 

@@ -1,6 +1,5 @@
 package org.example.DAOs;
 
-import com.sun.jdi.request.ClassPrepareRequest;
 import org.example.DTOs.Expense;
 import org.example.DTOs.Income;
 import org.example.Exceptions.DaoException;
@@ -62,21 +61,43 @@ public class MySqlFinanceDao extends MySqlDao implements FinanceDaoInterface{
     }
 
     @Override
-    public Expense addExpense(Expense e) throws DaoException {
+    public Object addRecord(Object obj) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+        String succsessMessage = "";
 
         try {
             connection = this.getConnection();
 
-            String query = "INSERT INTO expenses VALUES (?, ?, ?, ?, ?);";
-            preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, e.getExpenseID());
-            preparedStatement.setString(2, e.getTitle());
-            preparedStatement.setString(3, e.getCategory());
-            preparedStatement.setDouble(4, e.getAmount());
-            preparedStatement.setDate(5, new java.sql.Date(e.getDateIncurred().getTime()));
+            if(obj instanceof Income i)
+            {
+                String query = "INSERT INTO incomes VALUES (?, ?, ?, ?);";
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setInt(1, i.getIncomeID());
+                preparedStatement.setString(2, i.getTitle());
+                preparedStatement.setDouble(3, i.getAmount());
+                preparedStatement.setDate(4, new java.sql.Date(i.getDate().getTime()));
+
+                succsessMessage = "Income successfully added";
+            }
+            else if (obj instanceof Expense e)
+            {
+                String query = "INSERT INTO expenses VALUES (?, ?, ?, ?, ?);";
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setInt(1, e.getExpenseID());
+                preparedStatement.setString(2, e.getTitle());
+                preparedStatement.setString(3, e.getCategory());
+                preparedStatement.setDouble(4, e.getAmount());
+                preparedStatement.setDate(5, new java.sql.Date(e.getDateIncurred().getTime()));
+
+                succsessMessage = "Expense successfully added";
+            }
+            else {
+                System.out.println("Can't resolve an object" + obj);
+            }
+
             preparedStatement.executeUpdate();
+            System.out.println(succsessMessage);
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
@@ -90,14 +111,13 @@ public class MySqlFinanceDao extends MySqlDao implements FinanceDaoInterface{
                 throw new RuntimeException(ex);
             }
         }
-        return e;
+        return obj;
     }
 
     @Override
-    public Expense deleteExpenseByID(int ID) throws DaoException {
+    public boolean deleteExpenseByID(int ID) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        Expense e = null;
 
         try {
             connection = this.getConnection();
@@ -106,7 +126,7 @@ public class MySqlFinanceDao extends MySqlDao implements FinanceDaoInterface{
 
             preparedStatement.setInt(1, ID);
 
-            preparedStatement.executeUpdate();
+            return preparedStatement.executeUpdate() > 0;
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
@@ -120,7 +140,36 @@ public class MySqlFinanceDao extends MySqlDao implements FinanceDaoInterface{
                 throw new RuntimeException(ex);
             }
         }
-        return null;
+    }
+
+    @Override
+    public boolean deleteIncomeByID(int ID) throws DaoException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            connection = this.getConnection();
+            String query = "DELETE FROM incomes WHERE incomeID = ?";
+            preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.setInt(1, ID);
+
+            System.out.println("Income Deleted Successfully");
+
+            return preparedStatement.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+        finally {
+            try{
+                if(preparedStatement != null)
+                    preparedStatement.close();
+                if(connection != null)
+                    connection.close();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
     }
 
     public List<Income> listAllIncomes() throws DaoException {
@@ -143,11 +192,11 @@ public class MySqlFinanceDao extends MySqlDao implements FinanceDaoInterface{
                 int incomeID = resultSet.getInt("incomeID");
                 String title = resultSet.getString("title");
                 double amount = resultSet.getDouble("amount");
-                Date dateIncurred = resultSet.getDate("dateIncurred");
+                Date dateEarned = resultSet.getDate("dateEarned");
 
                 totalIncome += amount;
 
-                incomes.add(new Income(incomeID, title, amount, dateIncurred));
+                incomes.add(new Income(incomeID, title, amount, dateEarned));
             }
             System.out.println("Total income: "+ totalIncome);
         } catch (SQLException e) {
