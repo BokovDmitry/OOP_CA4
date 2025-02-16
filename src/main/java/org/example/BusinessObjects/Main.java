@@ -1,4 +1,4 @@
-package org.example;
+package org.example.BusinessObjects;
 
 import org.example.DAOs.FinanceDaoInterface;
 import org.example.DAOs.MySqlFinanceDao;
@@ -6,7 +6,6 @@ import org.example.DTOs.Expense;
 import org.example.DTOs.Income;
 import org.example.Exceptions.DaoException;
 
-import java.time.LocalDate;
 import java.util.*;
 
 public class Main {

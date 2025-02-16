@@ -118,6 +118,7 @@ public class MySqlFinanceDao extends MySqlDao implements FinanceDaoInterface{
     public boolean deleteExpenseByID(int ID) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+        boolean result;
 
         try {
             connection = this.getConnection();
@@ -126,9 +127,10 @@ public class MySqlFinanceDao extends MySqlDao implements FinanceDaoInterface{
 
             preparedStatement.setInt(1, ID);
 
-            System.out.println("Expense Deleted Successfully");
+            result = preparedStatement.executeUpdate() > 0;
+            System.out.println("Expense Deleted Successfully: " + result);
 
-            return preparedStatement.executeUpdate() > 0;
+            return result;
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
@@ -148,6 +150,7 @@ public class MySqlFinanceDao extends MySqlDao implements FinanceDaoInterface{
     public boolean deleteIncomeByID(int ID) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+        boolean result;
 
         try {
             connection = this.getConnection();
@@ -156,9 +159,9 @@ public class MySqlFinanceDao extends MySqlDao implements FinanceDaoInterface{
 
             preparedStatement.setInt(1, ID);
 
-            System.out.println("Income Deleted Successfully");
-
-            return preparedStatement.executeUpdate() > 0;
+            result = preparedStatement.executeUpdate() > 0;
+            System.out.println("Income Deleted Successfully : " + result);
+            return result;
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
@@ -229,6 +232,8 @@ public class MySqlFinanceDao extends MySqlDao implements FinanceDaoInterface{
         try {
             connection = this.getConnection();
 
+            //https://www.w3schools.com/sql/func_sqlserver_month.asp
+            //https://www.w3schools.com/sql/func_sqlserver_year.asp
             String incomeQuery = "SELECT * FROM incomes WHERE YEAR(dateEarned) = ? AND MONTH(dateEarned) = ?";
             incomeStatement = connection.prepareStatement(incomeQuery);
             incomeStatement.setInt(1, year);
@@ -252,6 +257,8 @@ public class MySqlFinanceDao extends MySqlDao implements FinanceDaoInterface{
             System.out.println("\nTotal Month Income: "+ monthIncome + "\n");
             resultSet.close();
 
+            //https://www.w3schools.com/sql/func_sqlserver_month.asp
+            //https://www.w3schools.com/sql/func_sqlserver_year.asp
             String expenseQuery = "SELECT * FROM expenses WHERE YEAR(dateIncurred) = ? AND MONTH(dateIncurred) = ?";
             expenseStatement = connection.prepareStatement(expenseQuery);
             expenseStatement.setInt(1, year);
