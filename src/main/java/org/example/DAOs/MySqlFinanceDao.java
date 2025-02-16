@@ -126,6 +126,8 @@ public class MySqlFinanceDao extends MySqlDao implements FinanceDaoInterface{
 
             preparedStatement.setInt(1, ID);
 
+            System.out.println("Expense Deleted Successfully");
+
             return preparedStatement.executeUpdate() > 0;
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
@@ -216,5 +218,74 @@ public class MySqlFinanceDao extends MySqlDao implements FinanceDaoInterface{
         }
         return incomes;
     }
+
+    @Override
+    public void calculateLeftOver(int year, int month) throws DaoException {
+        Connection connection = null;
+        PreparedStatement incomeStatement = null;
+        PreparedStatement expenseStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = this.getConnection();
+
+            String incomeQuery = "SELECT * FROM incomes WHERE YEAR(dateEarned) = ? AND MONTH(dateEarned) = ?";
+            incomeStatement = connection.prepareStatement(incomeQuery);
+            incomeStatement.setInt(1, year);
+            incomeStatement.setInt(2, month);
+
+            double monthIncome = 0;
+            double monthExpense = 0;
+
+            resultSet = incomeStatement.executeQuery();
+            System.out.println("Incomes:");
+            while (resultSet.next()) {
+                int incomeID = resultSet.getInt("incomeID");
+                String title = resultSet.getString("title");
+                double amount = resultSet.getDouble("amount");
+                Date dateEarned = resultSet.getDate("dateEarned");
+
+                System.out.printf("%-5d %-20s %-10.2f %tB %<td\n", incomeID, title, amount, dateEarned);
+                monthIncome += amount;
+            }
+
+            System.out.println("\nTotal Month Income: "+ monthIncome + "\n");
+            resultSet.close();
+
+            String expenseQuery = "SELECT * FROM expenses WHERE YEAR(dateIncurred) = ? AND MONTH(dateIncurred) = ?";
+            expenseStatement = connection.prepareStatement(expenseQuery);
+            expenseStatement.setInt(1, year);
+            expenseStatement.setInt(2, month);
+
+            resultSet = expenseStatement.executeQuery();
+            System.out.println("\nExpenses:");
+            while (resultSet.next()) {
+                int expenseID = resultSet.getInt("expenseID");
+                String title = resultSet.getString("title");
+                String category = resultSet.getString("category");
+                double amount = resultSet.getDouble("amount");
+                Date dateIncurred = resultSet.getDate("dateIncurred");
+
+                System.out.printf("%-5d %-20s %-15s %-10.2f %tB %<td\n", expenseID, title, category, amount, dateIncurred);
+                monthExpense += amount;
+            }
+            System.out.printf("\nTotal Month Expenses: %.2f\n", monthExpense);
+
+            System.out.println("\nLeftover: " + (monthIncome - monthExpense));
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (incomeStatement != null) incomeStatement.close();
+                if (expenseStatement != null) expenseStatement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
 
 }

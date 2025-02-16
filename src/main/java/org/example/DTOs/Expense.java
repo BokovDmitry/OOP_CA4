@@ -69,12 +69,7 @@ public class Expense {
 
     @Override
     public String toString() {
-        return "Expense{" +
-                "id=" + expenseID +
-                ", title='" + title + '\'' +
-                ", category='" + category + '\'' +
-                ", amount=" + amount +
-                ", dateIncurred=" + dateIncurred +
-                '}';
+        return String.format("%-5d | %-20s | %-15s | %10.2f | %s",
+                expenseID, title, category, amount, dateIncurred.toString());
     }
 }

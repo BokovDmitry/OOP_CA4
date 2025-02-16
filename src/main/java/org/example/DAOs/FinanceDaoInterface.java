@@ -12,5 +12,6 @@ public interface FinanceDaoInterface {
     public Object addRecord(Object obj) throws DaoException;
     public boolean deleteExpenseByID(int ID) throws DaoException;
     public boolean deleteIncomeByID(int ID) throws DaoException;
+    public void calculateLeftOver(int year, int month) throws DaoException;
 
 }

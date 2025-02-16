@@ -58,11 +58,7 @@ public class Income {
 
     @Override
     public String toString() {
-        return "Income{" +
-                "expenseID=" + incomeID +
-                ", title='" + title + '\'' +
-                ", amount=" + amount +
-                ", date=" + date +
-                '}';
+        return String.format("%-5d | %-20s | %10.2f | %s",
+                incomeID, title, amount, date.toString());
     }
 }
